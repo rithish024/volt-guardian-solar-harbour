@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "Volt Guardian: Power Run",
+  "short_name": "Volt Guardian",
+  "description": "A Solar Harbour superhero energy runner. Protect the city, collect clean energy and dodge bill monsters.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#071426",
+  "theme_color": "#071426",
+  "prefer_related_applications": false,
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
