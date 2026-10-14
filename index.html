@@ -1,1 +1,167 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07152e">
+<title>Volt Guardian: Power Battle | Solar Harbour</title>
+<style>
+:root{--navy:#07152e;--navy2:#0c2145;--blue:#18a8ff;--gold:#ffc94a;--white:#f5f8ff;--muted:#a9bdd8;--red:#ff5364}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#030914;color:var(--white);font-family:Inter,Segoe UI,Arial,sans-serif}
+body{display:flex;justify-content:center;align-items:center;padding:14px;background:radial-gradient(ellipse at top,#102d57 0%,#050c19 60%,#02050b 100%)}
+.shell{width:min(100%,1100px)}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;padding:0 4px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:42px;height:42px;border:2px solid var(--gold);border-radius:12px;display:grid;place-items:center;color:var(--gold);font-size:25px;font-weight:900;box-shadow:0 0 20px #ffc94a22}
+.brand h1{font-size:clamp(16px,2.5vw,23px);margin:0;letter-spacing:.06em}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.22em;margin-top:3px}
+.pill{border:1px solid #274b76;border-radius:999px;padding:8px 12px;color:#d5e5ff;font-size:11px;letter-spacing:.08em;background:#0a1a32}
+.gamebox{border:1px solid #1b4d79;border-radius:20px;overflow:hidden;background:#061329;box-shadow:0 20px 70px #0009,0 0 35px #159fff12;position:relative}
+.hud{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;padding:13px 16px;background:linear-gradient(90deg,#07172f,#102a4c,#07172f);border-bottom:1px solid #173b62}
+.meter-wrap{min-width:0}.meter-label{display:flex;justify-content:space-between;gap:8px;font-size:10px;letter-spacing:.12em;color:#c5d7ef;margin-bottom:6px}.meter{height:9px;background:#152b49;border-radius:9px;overflow:hidden;border:1px solid #29496b}.fill{height:100%;width:100%;transition:width .15s linear}.hero-fill{background:linear-gradient(90deg,#00a6ff,#62e5ff);box-shadow:0 0 12px #18a8ff}.boss-fill{background:linear-gradient(90deg,#ff9b32,#ff445e);box-shadow:0 0 12px #ff5364}.centerhud{text-align:center;font-size:10px;letter-spacing:.12em;color:var(--gold);white-space:nowrap}.centerhud strong{display:block;color:white;font-size:17px;margin-top:3px;letter-spacing:.06em}
+canvas{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#06152b;touch-action:none}
+.bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:11px 15px;background:#071329;border-top:1px solid #173b62;color:var(--muted);font-size:11px}
+.controls{display:flex;gap:7px;align-items:center}.key{border:1px solid #315579;background:#102642;color:#dcecff;border-radius:6px;padding:4px 7px;font-weight:700}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:linear-gradient(135deg,#061329eF,#071a32e8);z-index:3}
+.panel{width:min(100%,510px);padding:clamp(20px,4vw,36px);border:1px solid #2d6692;border-radius:20px;background:linear-gradient(145deg,#102a4aee,#071329f5);box-shadow:0 0 60px #009dff1b}
+.kicker{color:var(--gold);font-size:11px;letter-spacing:.25em;font-weight:800}.panel h2{font-size:clamp(27px,5vw,46px);line-height:1.02;margin:12px 0;color:white}.panel p{color:#bed0e6;line-height:1.6;font-size:14px}.btn{border:0;border-radius:10px;padding:13px 18px;background:linear-gradient(100deg,#ffc94a,#ffdf81);color:#07152e;font-weight:900;letter-spacing:.08em;cursor:pointer;box-shadow:0 7px 20px #ffc94a20}.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.btn.secondary{background:#102d4c;border:1px solid #2a6595;color:#eaf6ff;box-shadow:none}.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}.review-note{font-size:11px!important;color:#9fb7d1!important;margin-top:14px!important}.hidden{display:none!important}
+.mobile-controls{display:none;gap:8px;justify-content:space-between;padding:10px;background:#061329}.mobile-controls button{flex:1;min-height:46px;border:1px solid #2b5980;border-radius:10px;background:#0e2846;color:#f5f8ff;font-weight:800;touch-action:none}.mobile-controls .blast{border-color:#bd9a35;color:var(--gold)}
+@media(max-width:600px){body{padding:8px}.top{margin-bottom:8px}.hud{padding:10px;gap:7px}.meter-label{font-size:8px}.centerhud{font-size:8px}.centerhud strong{font-size:14px}.bottom{font-size:10px}.mobile-controls{display:flex}.controls{display:none}.pill{font-size:9px}.logo{width:36px;height:36px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="brand"><div class="logo">ϟ</div><div><h1>VOLT GUARDIAN</h1><small>SOLAR HARBOUR • RENEW OUR FUTURE</small></div></div>
+    <div class="pill">POWER BATTLE <span style="color:var(--gold)">/ 01</span></div>
+  </header>
+  <main class="gamebox">
+    <div class="hud">
+      <div class="meter-wrap"><div class="meter-label"><span>GUARDIAN ENERGY</span><span id="heroPct">100%</span></div><div class="meter"><div id="heroBar" class="fill hero-fill"></div></div></div>
+      <div class="centerhud">MISSION SCORE<strong id="score">0000</strong></div>
+      <div class="meter-wrap"><div class="meter-label"><span>BILL BEAST</span><span id="bossPct">100%</span></div><div class="meter"><div id="bossBar" class="fill boss-fill"></div></div></div>
+    </div>
+    <div style="position:relative">
+      <canvas id="game" width="960" height="540" aria-label="Volt Guardian game battlefield"></canvas>
+      <div id="startOverlay" class="overlay"><div class="panel">
+        <div class="kicker">SOLAR HARBOUR PRESENTS</div><h2>THE POWER<br><span style="color:var(--gold)">IS IN YOUR HANDS.</span></h2>
+        <p>Bill Beast is draining the city with sky-high energy bills. Collect clean energy, dodge his attacks and unleash your solar blast before nightfall.</p>
+        <div class="actions"><button class="btn" id="startBtn">START MISSION ⚡</button></div>
+        <p class="review-note">A quick browser game. No install needed.</p>
+      </div></div>
+      <div id="endOverlay" class="overlay hidden"><div class="panel">
+        <div class="kicker" id="endKicker">MISSION COMPLETE</div><h2 id="endTitle">CITY POWERED.</h2>
+        <p id="endText">The city is shining again.</p>
+        <div class="actions"><button class="btn" id="reviewBtn">★ REVIEW SOLAR HARBOUR</button><button class="btn secondary" id="againBtn">PLAY AGAIN</button></div>
+        <p class="review-note">If you’ve worked with Solar Harbour, you can leave an honest review on Google. Your feedback is appreciated.</p>
+      </div></div>
+    </div>
+    <div class="mobile-controls" aria-label="Touch controls">
+      <button data-key="left">◀ MOVE</button><button data-key="right">MOVE ▶</button><button data-key="dodge">DODGE</button><button class="blast" data-key="blast">⚡ BLAST</button>
+    </div>
+    <div class="bottom"><span>MISSION: DEFEAT BILL BEAST BEFORE NIGHTFALL</span><div class="controls"><span class="key">←</span><span class="key">→</span> Move <span class="key">SPACE</span> Dodge <span class="key">X</span> Blast</div><span>10 YEARS OF TRUST • CLEANER ENERGY</span></div>
+  </main>
+</div>
+<script>
+(() => {
+const REVIEW_URL = "https://www.google.com/search?q=solar+harbour+norwest&sca_esv=b60cf111ab395866&rlz=1C1FKPE_en-GBAU1030AU1030&sxsrf=APpeQnvAG8uSZw8c4b1PfMIsNHyI2VWj2g%3A1791863230323&ei=vqnNaricE7Gu2roP-8uk6QU&biw=1920&bih=945&uact=5&oq=solar+harbour+norwest&gs_lp=Egxnd3Mtd2l6LXNlcnAiFXNvbGFyIGhhcmJvdXIgbm9yd2VzdDIGEAAYFhgeMgIQJjILEAAYgAQYigUYhgMyCxAAGIAEGIoFGIYDMgUQABjvBTIFEAAY7wUyBRAAGO8FMggQABiABBiiBDIFEAAY7wVIjBRQkAdY7hFwAngBkAEAmAHJAaABywqqAQUwLjYuMbgBA8gBAPgBAZgCCaAChQvCAgoQABhHGNYEGLADwgIOEAAY5AIY1gQYsAPYAQHCAhcQLhjcBhi4BhjaBhjYAhjIAxiwA9gBAZgDAIgGAZAGDLoGBggBEAEYCZIHBTIuNS4yoAe2J7IHBTAuNS4yuAfyCsIHBTItOC4xyAcogAgB&sclient=gws-wiz-serp#lrd=0x6b129900c7ff9d03:0xabb56f52a63dfd95,3";
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+let running=false, ended=false, last=0, time=0, score=0, energy=100, boss=100, particles=[], bolts=[], pickups=[], keys={};
+let hero={x:150,y:390,w:44,h:76,vy:0,ground:390,inv:0,blastCd:0}, beast={x:760,y:370,w:112,h:118,phase:0,attack:0};
+const W=960,H=540;
+function reset(){running=false;ended=false;time=0;score=0;energy=100;boss=100;particles=[];bolts=[];pickups=[];hero={x:150,y:390,w:44,h:76,vy:0,ground:390,inv:0,blastCd:0};beast={x:760,y:370,w:112,h:118,phase:0,attack:0};for(let i=0;i<7;i++)pickups.push({x:300+i*82,y:260+Math.random()*95,r:11,got:false});updateHud();draw();}
+function updateHud(){$('heroBar').style.width=Math.max(0,energy)+'%';$('heroPct').textContent=Math.max(0,Math.round(energy))+'%';$('bossBar').style.width=Math.max(0,boss)+'%';$('bossPct').textContent=Math.max(0,Math.round(boss))+'%';$('score').textContent=String(score).padStart(4,'0');}
+function roundRect(c,x,y,w,h,r){c.beginPath();c.roundRect(x,y,w,h,r);c.fill();}
+function glow(color,blur){ctx.shadowColor=color;ctx.shadowBlur=blur}
+function background(){
+ let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#07142b');g.addColorStop(1,'#0b2c4b');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ // stars
+ for(let i=0;i<85;i++){let x=(i*127+23)%W,y=(i*71+13)%290;ctx.fillStyle=`rgba(173,221,255,${.16+((i%4)*.12)})`;ctx.fillRect(x,y,2,2)}
+ // moon / sun
+ glow('#ffc94a',25);ctx.fillStyle='#ffc94a';ctx.beginPath();ctx.arc(790,86,28,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+ // skyline
+ for(let i=0;i<18;i++){let bw=32+(i%4)*12,bh=70+(i*37%115),x=i*57-5;ctx.fillStyle=i%2?'#0b2340':'#102a49';ctx.fillRect(x,380-bh,bw,bh);for(let wy=0;wy<4;wy++)for(let wx=0;wx<2;wx++){ctx.fillStyle=(i+wx+wy)%3?'#1d6090':'#ffc94a';ctx.globalAlpha=.35;ctx.fillRect(x+7+wx*13,390-bh+wy*18,5,7);ctx.globalAlpha=1}}
+ // ground
+ let gr=ctx.createLinearGradient(0,430,0,H);gr.addColorStop(0,'#123755');gr.addColorStop(1,'#061327');ctx.fillStyle=gr;ctx.fillRect(0,430,W,110);
+ ctx.strokeStyle='#147db0';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,430);ctx.lineTo(W,430);ctx.stroke();
+ for(let i=0;i<12;i++){ctx.strokeStyle='rgba(24,168,255,.16)';ctx.beginPath();ctx.moveTo(i*100,430);ctx.lineTo(i*100-70,540);ctx.stroke()}
+}
+function drawHero(){
+ let x=hero.x,y=hero.y;
+ if(hero.inv>0&&Math.floor(time*18)%2===0)return;
+ ctx.save();ctx.translate(x,y);
+ // aura
+ glow('#18a8ff',17);ctx.fillStyle='#18a8ff22';ctx.beginPath();ctx.ellipse(0,28,42,57,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+ // cape
+ ctx.fillStyle='#123c70';ctx.beginPath();ctx.moveTo(-12,-18);ctx.lineTo(-32,42);ctx.lineTo(-6,34);ctx.lineTo(8,-15);ctx.fill();
+ // legs
+ ctx.fillStyle='#10284b';roundRect(ctx,-17,22,13,32,5);roundRect(ctx,5,22,13,32,5);
+ ctx.fillStyle='#ffc94a';roundRect(ctx,-19,48,17,8,3);roundRect(ctx,4,48,17,8,3);
+ // body
+ glow('#18a8ff',10);ctx.fillStyle='#1266a3';ctx.beginPath();ctx.moveTo(-20,-19);ctx.lineTo(20,-19);ctx.lineTo(17,25);ctx.lineTo(-17,25);ctx.closePath();ctx.fill();ctx.shadowBlur=0;
+ ctx.strokeStyle='#64d8ff';ctx.lineWidth=2;ctx.stroke();
+ // chest bolt
+ ctx.fillStyle='#ffc94a';ctx.beginPath();ctx.moveTo(3,-14);ctx.lineTo(-8,2);ctx.lineTo(0,2);ctx.lineTo(-3,15);ctx.lineTo(10,-3);ctx.lineTo(2,-3);ctx.closePath();ctx.fill();
+ // arms
+ ctx.fillStyle='#184879';roundRect(ctx,-29,-14,10,34,5);roundRect(ctx,19,-14,10,34,5);ctx.fillStyle='#ffc94a';roundRect(ctx,-29,11,10,8,3);roundRect(ctx,19,11,10,8,3);
+ // head and visor
+ ctx.fillStyle='#d9e9f7';ctx.beginPath();ctx.arc(0,-31,16,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0b2341';ctx.beginPath();ctx.ellipse(0,-31,14,7,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#3ed5ff';roundRect(ctx,-10,-34,20,5,2);
+ ctx.restore();
+}
+function drawBeast(){
+ let x=beast.x,y=beast.y+Math.sin(time*2)*4;
+ ctx.save();ctx.translate(x,y);
+ glow('#ff4d61',18);ctx.fillStyle='#521f3b';ctx.beginPath();ctx.moveTo(-48,-35);ctx.lineTo(-35,-57);ctx.lineTo(-18,-43);ctx.lineTo(0,-55);ctx.lineTo(19,-42);ctx.lineTo(38,-55);ctx.lineTo(48,-28);ctx.lineTo(45,37);ctx.lineTo(26,53);ctx.lineTo(-28,53);ctx.lineTo(-47,31);ctx.closePath();ctx.fill();ctx.shadowBlur=0;
+ ctx.strokeStyle='#ff6a6f';ctx.lineWidth=3;ctx.stroke();
+ // horns
+ ctx.fillStyle='#ffad48';ctx.beginPath();ctx.moveTo(-31,-39);ctx.lineTo(-49,-70);ctx.lineTo(-16,-48);ctx.fill();ctx.beginPath();ctx.moveTo(31,-39);ctx.lineTo(49,-70);ctx.lineTo(16,-48);ctx.fill();
+ // face
+ ctx.fillStyle='#f5c5a1';ctx.beginPath();ctx.ellipse(0,-16,31,28,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#ff334e';ctx.beginPath();ctx.moveTo(-23,-25);ctx.lineTo(-5,-19);ctx.lineTo(-17,-11);ctx.fill();ctx.beginPath();ctx.moveTo(23,-25);ctx.lineTo(5,-19);ctx.lineTo(17,-11);ctx.fill();
+ ctx.fillStyle='#301329';ctx.fillRect(-14,4,28,5);for(let i=0;i<5;i++){ctx.fillStyle='#fff';ctx.fillRect(-12+i*5,4,3,6)}
+ // armor with dollar sign
+ ctx.fillStyle='#ff8b36';roundRect(ctx,-36,19,72,29,8);ctx.fillStyle='#3b1528';ctx.font='bold 25px Arial';ctx.textAlign='center';ctx.fillText('$',0,42);
+ ctx.fillStyle='#d9e8f7';roundRect(ctx,-45,43,28,12,4);roundRect(ctx,17,43,28,12,4);
+ ctx.restore();
+}
+function drawPickup(p){if(p.got)return;glow('#ffc94a',18);ctx.fillStyle='#ffc94a';ctx.beginPath();ctx.arc(p.x,p.y,p.r+Math.sin(time*5+p.x)*2,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#0b2341';ctx.font='bold 15px Arial';ctx.textAlign='center';ctx.fillText('⚡',p.x,p.y+5)}
+function drawBolt(b){glow('#38d8ff',16);ctx.strokeStyle='#55e5ff';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x-12,b.y+14);ctx.lineTo(b.x+1,b.y+18);ctx.lineTo(b.x-10,b.y+34);ctx.stroke();ctx.shadowBlur=0}
+function draw(){
+ background();pickups.forEach(drawPickup);
+ // ambient energy lines
+ for(let i=0;i<5;i++){ctx.strokeStyle=`rgba(30,165,255,${.12+i*.025})`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,455+i*15);ctx.lineTo(W,455+i*15);ctx.stroke()}
+ bolts.forEach(drawBolt);
+ particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1});
+ drawHero();drawBeast();
+ ctx.textAlign='left';ctx.fillStyle='#8eb5d8';ctx.font='bold 12px Arial';ctx.fillText('CLEAN ENERGY ZONE',24,35);
+ ctx.fillStyle='#ffc94a';ctx.font='bold 11px Arial';ctx.fillText('COLLECT ⚡  •  DODGE  •  BLAST',24,53);
+}
+function burst(x,y,color,n=10){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*260,vy:(Math.random()-.5)*260,r:2+Math.random()*4,life:.4+Math.random()*.5,color})}
+function blast(){if(!running||ended||hero.blastCd>0)return;hero.blastCd=.45;bolts.push({x:hero.x+32,y:hero.y-20,vx:520});score+=5}
+function dodge(){if(!running||ended)return;hero.vy=-390;hero.inv=.65}
+function start(){ $('startOverlay').classList.add('hidden');$('endOverlay').classList.add('hidden');reset();running=true;last=performance.now();requestAnimationFrame(loop)}
+function finish(win){running=false;ended=true;$('endOverlay').classList.remove('hidden');$('endKicker').textContent=win?'MISSION COMPLETE':'MISSION FAILED';$('endTitle').innerHTML=win?'CITY POWERED.<br><span style="color:var(--gold)">HERO STATUS: LEGEND.</span>':'DARKNESS WINS.<br><span style="color:var(--gold)">TRY AGAIN, GUARDIAN.</span>';$('endText').textContent=win?`You defeated Bill Beast and restored power to the city. Final score: ${score}. Clean energy wins!`:`Bill Beast drained the Guardian. Final score: ${score}. Recharge and take the city back.`;$('reviewBtn').textContent='★ REVIEW SOLAR HARBOUR';}
+function loop(now){if(!running)return;let dt=Math.min((now-last)/1000,.035);last=now;time+=dt;update(dt);draw();if(running)requestAnimationFrame(loop)}
+function update(dt){
+ if(keys.left)hero.x-=260*dt;if(keys.right)hero.x+=260*dt;hero.x=Math.max(35,Math.min(900,hero.x));
+ hero.y+=hero.vy*dt;hero.vy+=900*dt;if(hero.y>hero.ground){hero.y=hero.ground;hero.vy=0}
+ hero.inv=Math.max(0,hero.inv-dt);hero.blastCd=Math.max(0,hero.blastCd-dt);
+ beast.phase+=dt;beast.attack-=dt;
+ if(beast.attack<=0){beast.attack=1.35+Math.random()*.7;bolts.push({x:beast.x-50,y:beast.y-20,vx:-250});}
+ for(let b of bolts){b.x+=b.vx*dt;if(b.vx>0&&b.x>beast.x-65&&b.x<beast.x+20&&Math.abs(b.y-(beast.y-15))<55){b.x=-100;boss=Math.max(0,boss-12);score+=100;burst(beast.x,beast.y-20,'#ffc94a',18)}else if(b.vx<0&&Math.abs(b.x-hero.x)<28&&Math.abs(b.y-(hero.y-15))<50&&hero.inv<=0){b.x=-100;energy=Math.max(0,energy-15);hero.inv=.75;burst(hero.x,hero.y,'#ff5364',12)}}
+ bolts=bolts.filter(b=>b.x>-80&&b.x<W+50);
+ pickups.forEach(p=>{if(!p.got&&Math.hypot(hero.x-p.x,hero.y-25-p.y)<35){p.got=true;energy=Math.min(100,energy+10);score+=50;burst(p.x,p.y,'#ffc94a',10)}});
+ particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;p.life-=dt});particles=particles.filter(p=>p.life>0);
+ if(boss<=0){score+=Math.max(0,Math.round((40-time)*10));updateHud();finish(true)}
+ else if(energy<=0||time>45){finish(false)}
+ if(pickups.every(p=>p.got)&&pickups.length<12){for(let i=0;i<3;i++)pickups.push({x:280+i*170,y:255+Math.random()*100,r:11,got:false})}
+ updateHud();
+}
+document.addEventListener('keydown',e=>{let k=e.key.toLowerCase();if(['arrowleft','arrowright',' ','x','enter'].includes(k))e.preventDefault();if(k==='arrowleft'||k==='a')keys.left=true;if(k==='arrowright'||k==='d')keys.right=true;if(k===' '||k==='arrowup')dodge();if(k==='x'||k==='enter')blast();if(k==='r')start()});
+document.addEventListener('keyup',e=>{let k=e.key.toLowerCase();if(k==='arrowleft'||k==='a')keys.left=false;if(k==='arrowright'||k==='d')keys.right=false});
+document.querySelectorAll('[data-key]').forEach(btn=>{const key=btn.dataset.key;const down=e=>{e.preventDefault();if(key==='left')keys.left=true;else if(key==='right')keys.right=true;else if(key==='dodge')dodge();else if(key==='blast')blast()};const up=e=>{e.preventDefault();if(key==='left')keys.left=false;if(key==='right')keys.right=false};btn.addEventListener('pointerdown',down);btn.addEventListener('pointerup',up);btn.addEventListener('pointercancel',up);btn.addEventListener('pointerleave',up)});
+$('startBtn').addEventListener('click',start);$('againBtn').addEventListener('click',start);$('reviewBtn').addEventListener('click',()=>window.open(REVIEW_URL,'_blank','noopener,noreferrer'));
+reset();
+})();
+</script>
+</body>
+</html>
